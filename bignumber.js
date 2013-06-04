@@ -1226,10 +1226,10 @@
             ys = y['s'],
             i = DECIMAL_PLACES,
             j = ROUNDING_MODE,
-            q = null; // quotient
+            q; // quotient
 
-        // Is x or xs NaN, or y zero?
-        b = !xs || !ys || yc && !yc[0];
+        // Is x or y NaN; or is x Infinity, or y zero?
+        b = !xs || !ys || !xc || yc && !yc[0];
 
         if ( b || xc && !xc[0] ) {
             return new BigNumber( b ? NaN : x )
@@ -1237,7 +1237,6 @@
 
         // Is y Infinity?
         b = y['c'] === null
-
 
         if (b) {
             return new BigNumber(x)
@@ -1253,11 +1252,13 @@
             DECIMAL_PLACES = 0;
             var q = x['div'](y);
 
-            q['s'] *= (y['s'] = ys);
+            y['s'] = ys;
+
             DECIMAL_PLACES = i;
             ROUNDING_MODE = j;
 
-            return this['minus'](q['times'](y));
+            var TEMP = this['minus'](q['times'](y));
+            return TEMP;
         }
     };
 
